@@ -75,18 +75,28 @@ class LinearizedDuckiebotModel:
         Input vector: [v_l, v_r]
         """
         # System matrices at operating point
+        # A = np.array([
+        #     [0, 0, self.base_speed * np.cos(theta_operating)],
+        #     [0, 0, self.base_speed * theta_operating],
+        #     [0, 0, 0]
+        # ])
         A = np.array([
-            [0, 0, -self.base_speed * np.sin(theta_operating)],
-            [0, 0, self.base_speed * np.cos(theta_operating)],
+            [0, 0, 0],
+            [0, 0, self.base_speed],
             [0, 0, 0]
         ])
 
         # Input matrix
         B = np.array([
-            [self.R/2 * np.cos(theta_operating), self.R/2 * np.cos(theta_operating)],
-            [self.R/2 * np.sin(theta_operating), self.R/2 * np.sin(theta_operating)],
+            [self.R/2 , self.R/2],
+            [0, 0],
             [-self.R/self.L, self.R/self.L]
         ])
+        # B = np.array([
+        #     [self.R/2 * np.cos(theta_operating), self.R/2 * np.cos(theta_operating)],
+        #     [self.R/2 * theta_operating, self.R/2 * theta_operating],
+        #     [-self.R/self.L, self.R/self.L]
+        # ])
 
         return A, B
 
@@ -151,7 +161,7 @@ def compare_models(nonlinear_model, linear_model, pid, setpoint, dt, total_time)
     t_l, x_l, y_l, theta_l, omega_l = simulate_linearized_duckiebot(
         linear_model, pid, setpoint, dt, total_time
     )
-    
+    print(x_l)
     # Plot comparison
     plt.figure(figsize=(15, 12))
     
@@ -211,7 +221,7 @@ def main():
     )
     
     # Create PID controller
-    pid = PIDController(kp=0.198, ki=0.239, kd=1.209)
+    pid = PIDController(kp=0.362, ki=1.007, kd=1.743)
     
     # Simulation parameters
     setpoint = 0
